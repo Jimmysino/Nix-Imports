@@ -302,6 +302,36 @@ nix-imports/
 
 ---
 
+## Convención de Commits
+
+Seguimos **Conventional Commits**. Formato: `tipo(scope): descripción`
+
+| Tipo | Cuándo usarlo |
+|------|--------------|
+| `feat` | Nueva funcionalidad |
+| `fix` | Corrección de bug |
+| `refactor` | Cambio de código sin cambiar comportamiento |
+| `style` | Cambios de estilos/UI sin lógica |
+| `chore` | Tareas de configuración, dependencias |
+| `docs` | Cambios en documentación |
+
+**El scope es el ID de la historia:** `feat(NIX-001)`, `fix(NIX-002)`, etc.
+
+**Ejemplos:**
+```
+feat(NIX-001): agregar formulario de registro de pedido
+fix(NIX-001): mostrar error si falla creacion de pedido
+feat(NIX-002): calcular cotizacion con comision automatica
+```
+
+**Reglas:**
+- Descripción en minúsculas y sin punto final
+- Sin tildes ni caracteres especiales en el mensaje
+- Un commit por cambio lógico, no un commit por archivo
+- No se agrega autoría de herramientas en los commits
+
+---
+
 ## Notas
 - El sistema es solo para el administrador (no hay portal de cliente)
 - MVP1 = solo productos tecnológicos (celulares, laptops, etc.)

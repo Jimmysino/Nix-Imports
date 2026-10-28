@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Plus, X } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Badge } from '../components/ui/Badge'
@@ -8,6 +9,7 @@ import { useClientes } from '../hooks/useClientes'
 import type { CategoriaTech } from '../types/database'
 
 export function Pedidos() {
+  const navigate = useNavigate()
   const [mostrarForm, setMostrarForm] = useState(false)
   const [exito, setExito] = useState<string | null>(null)
   const [errorForm, setErrorForm] = useState<string | null>(null)
@@ -117,7 +119,7 @@ export function Pedidos() {
             </thead>
             <tbody>
               {pedidos.map((pedido) => (
-                <tr key={pedido.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer">
+                <tr key={pedido.id} onClick={() => navigate(`/pedidos/${pedido.id}`)} className="border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer">
                   <td className="px-4 py-3 font-mono text-blue-600 font-medium">{pedido.codigo}</td>
                   <td className="px-4 py-3 text-gray-700">{pedido.cliente?.nombre ?? '—'}</td>
                   <td className="px-4 py-3 text-gray-700 max-w-48 truncate">{pedido.producto_nombre}</td>
