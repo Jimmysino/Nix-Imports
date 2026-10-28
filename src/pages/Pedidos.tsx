@@ -10,6 +10,7 @@ import type { CategoriaTech } from '../types/database'
 export function Pedidos() {
   const [mostrarForm, setMostrarForm] = useState(false)
   const [exito, setExito] = useState<string | null>(null)
+  const [errorForm, setErrorForm] = useState<string | null>(null)
   const { pedidos, loading, crearPedido } = usePedidos()
   const { clientes, crearCliente } = useClientes()
 
@@ -21,24 +22,29 @@ export function Pedidos() {
     categoria: CategoriaTech
     notas?: string
   }) {
-    const pedido = await crearPedido({
-      cliente_id: values.cliente_id,
-      producto_nombre: values.producto_nombre,
-      producto_descripcion: values.producto_descripcion ?? null,
-      producto_url: values.producto_url || null,
-      categoria: values.categoria,
-      estado: 'Solicitado',
-      precio_usd: null,
-      costo_envio_usd: null,
-      impuestos_usd: null,
-      comision_porcentaje: null,
-      comision_monto_usd: null,
-      total_usd: null,
-      notas: values.notas ?? null,
-    })
-    setMostrarForm(false)
-    setExito(`Pedido ${pedido.codigo} creado correctamente`)
-    setTimeout(() => setExito(null), 4000)
+    setErrorForm(null)
+    try {
+      const pedido = await crearPedido({
+        cliente_id: values.cliente_id,
+        producto_nombre: values.producto_nombre,
+        producto_descripcion: values.producto_descripcion ?? null,
+        producto_url: values.producto_url || null,
+        categoria: values.categoria,
+        estado: 'Solicitado',
+        precio_usd: null,
+        costo_envio_usd: null,
+        impuestos_usd: null,
+        comision_porcentaje: null,
+        comision_monto_usd: null,
+        total_usd: null,
+        notas: values.notas ?? null,
+      })
+      setMostrarForm(false)
+      setExito(`Pedido ${pedido.codigo} creado correctamente`)
+      setTimeout(() => setExito(null), 4000)
+    } catch (err: unknown) {
+      setErrorForm(err instanceof Error ? err.message : 'Error al crear el pedido')
+    }
   }
 
   return (
@@ -49,7 +55,7 @@ export function Pedidos() {
           <h1 className="text-xl font-bold text-gray-900">Pedidos</h1>
           <p className="text-sm text-gray-500 mt-0.5">{pedidos.length} pedido{pedidos.length !== 1 ? 's' : ''} registrado{pedidos.length !== 1 ? 's' : ''}</p>
         </div>
-        <Button onClick={() => setMostrarForm(true)} className="gap-2">
+        <Button onClick={() => { setMostrarForm(true); setErrorForm(null) }} className="gap-2">
           <Plus size={16} />
           Nuevo pedido
         </Button>
@@ -73,6 +79,11 @@ export function Pedidos() {
             </button>
           </div>
           <div className="p-6">
+            {errorForm && (
+              <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                ✗ {errorForm}
+              </div>
+            )}
             <NuevoPedidoForm
               clientes={clientes}
               onSubmit={handleCrearPedido}
