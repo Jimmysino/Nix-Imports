@@ -30,11 +30,12 @@ export function usePedidos() {
       .single()
     if (error) throw new Error(error.message)
     // Registrar estado inicial en historial
-    await supabase.from('historial_estados').insert({
+    const { error: historialError } = await supabase.from('historial_estados').insert({
       pedido_id: data.id,
       estado: 'Solicitado',
       notas: 'Pedido creado',
     })
+    if (historialError) throw new Error(historialError.message)
     setPedidos((prev) => [data, ...prev])
     return data
   }
