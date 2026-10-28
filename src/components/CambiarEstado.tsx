@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { ChevronRight, XCircle } from 'lucide-react'
 import { Button } from './ui/Button'
-import { Badge } from './ui/Badge'
 import { FLUJO_ESTADOS, getSiguienteEstado, puedeCancelar } from '../utils/estados'
 import type { EstadoPedido } from '../types/database'
 
