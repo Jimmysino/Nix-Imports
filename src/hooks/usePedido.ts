@@ -50,8 +50,7 @@ export function usePedido(id: string) {
     })
     if (histError) throw new Error(histError.message)
 
-    setPedido(data)
-    setHistorial((prev) => [...prev, { id: crypto.randomUUID(), pedido_id: pedido.id, estado: 'Cotizado', fecha: new Date().toISOString(), notas: 'Cotización generada' }])
+    await fetchPedido()
     return data
   }
 

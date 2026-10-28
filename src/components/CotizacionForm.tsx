@@ -4,13 +4,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Input } from './ui/Input'
 import { Button } from './ui/Button'
-import { calcularCotizacion, formatUSD } from '../utils/cotizacion'
+import { calcularCotizacion, formatUSD, formatLocal } from '../utils/cotizacion'
 
 const schema = z.object({
-  precio_usd:        z.coerce.number().positive('Debe ser mayor a 0'),
-  costo_envio_usd:   z.coerce.number().min(0, 'No puede ser negativo'),
-  impuestos_usd:     z.coerce.number().min(0, 'No puede ser negativo'),
+  precio_usd:          z.coerce.number().positive('Debe ser mayor a 0'),
+  costo_envio_usd:     z.coerce.number().min(0, 'No puede ser negativo'),
+  impuestos_usd:       z.coerce.number().min(0, 'No puede ser negativo'),
   comision_porcentaje: z.coerce.number().min(0).max(100, 'Máximo 100%'),
+  tipo_cambio:         z.coerce.number().positive('Debe ser mayor a 0'),
 })
 
 type CotizacionValues = z.infer<typeof schema>
@@ -33,6 +34,7 @@ export function CotizacionForm({ comisionDefault, valoresIniciales, onGuardar, s
       costo_envio_usd:     valoresIniciales?.costo_envio_usd ?? 0,
       impuestos_usd:       valoresIniciales?.impuestos_usd ?? 0,
       comision_porcentaje: valoresIniciales?.comision_porcentaje ?? comisionDefault,
+      tipo_cambio:         valoresIniciales?.tipo_cambio ?? 1,
     },
   })
 
@@ -110,6 +112,16 @@ export function CotizacionForm({ comisionDefault, valoresIniciales, onGuardar, s
           {...register('comision_porcentaje')}
           error={errors.comision_porcentaje?.message}
         />
+        <Input
+          label="Tipo de cambio (1 USD = ?)"
+          type="number"
+          step="0.01"
+          min="0"
+          required
+          disabled={soloLectura}
+          {...register('tipo_cambio')}
+          error={errors.tipo_cambio?.message}
+        />
       </div>
 
       {/* Desglose */}
@@ -132,9 +144,15 @@ export function CotizacionForm({ comisionDefault, valoresIniciales, onGuardar, s
           <span>{formatUSD(comisionMonto)}</span>
         </div>
         <div className="flex justify-between font-bold text-gray-900 text-base pt-2 border-t border-gray-300">
-          <span>Total a cobrar</span>
+          <span>Total a cobrar (USD)</span>
           <span className="text-blue-600">{formatUSD(total)}</span>
         </div>
+        {(valores.tipo_cambio || 0) > 1 && (
+          <div className="flex justify-between text-sm text-gray-500">
+            <span>Equivalente en moneda local</span>
+            <span className="font-medium text-gray-700">$ {formatLocal(total, valores.tipo_cambio || 1)}</span>
+          </div>
+        )}
       </div>
 
       {!soloLectura && (

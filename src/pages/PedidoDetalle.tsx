@@ -107,6 +107,7 @@ export function PedidoDetalle() {
                         costo_envio_usd: pedido.costo_envio_usd ?? undefined,
                         impuestos_usd: pedido.impuestos_usd ?? undefined,
                         comision_porcentaje: pedido.comision_porcentaje ?? undefined,
+                        tipo_cambio: pedido.tipo_cambio ?? undefined,
                       }
                     : undefined
                 }

@@ -41,6 +41,7 @@ export interface Pedido {
   comision_porcentaje: number | null
   comision_monto_usd: number | null
   total_usd: number | null
+  tipo_cambio: number | null
   notas: string | null
   created_at: string
   updated_at: string

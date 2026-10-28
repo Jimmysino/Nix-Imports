@@ -25,6 +25,7 @@ create table pedidos (
   comision_porcentaje numeric(5,2),
   comision_monto_usd numeric(10,2),
   total_usd numeric(10,2),
+  tipo_cambio numeric(10,2),
   notas text,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
