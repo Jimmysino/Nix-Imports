@@ -33,8 +33,10 @@ export function usePedido(id: string) {
     comision_porcentaje: number
     comision_monto_usd: number
     total_usd: number
+    tipo_cambio: number
   }) {
     if (!pedido) return
+    const estadoAnterior = pedido.estado
     const { data, error } = await supabase
       .from('pedidos')
       .update({ ...valores, estado: 'Cotizado' })
@@ -43,12 +45,15 @@ export function usePedido(id: string) {
       .single()
     if (error) throw new Error(error.message)
 
-    const { error: histError } = await supabase.from('historial_estados').insert({
-      pedido_id: pedido.id,
-      estado: 'Cotizado',
-      notas: 'Cotización generada',
-    })
-    if (histError) throw new Error(histError.message)
+    // Solo registrar cambio de estado si venía de Solicitado
+    if (estadoAnterior === 'Solicitado') {
+      const { error: histError } = await supabase.from('historial_estados').insert({
+        pedido_id: pedido.id,
+        estado: 'Cotizado',
+        notas: 'Cotización generada',
+      })
+      if (histError) throw new Error(histError.message)
+    }
 
     await fetchPedido()
     return data
