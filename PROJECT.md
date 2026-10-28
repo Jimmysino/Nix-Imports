@@ -1,0 +1,308 @@
+# NIX IMPORTS - Sistema ERP para Importadora
+
+## Contexto del Negocio
+
+**Empresa:** NIX IMPORTS — importadora que opera como intermediaria entre proveedores internacionales y clientes locales.
+
+**Moneda de operación:** Los productos se compran en USD (dólares) y se cotizan/cobran al cliente en moneda local. El admin registra los montos en USD y el sistema debe mostrar el equivalente en moneda local (tipo de cambio manual por ahora).
+
+**Modelo de negocio:** La empresa NO compra inventario propio de tecnología. Funciona bajo demanda: el cliente pide, la empresa importa y cobra comisión por el servicio. La ganancia principal es la comisión sobre cada importación.
+
+### Líneas de negocio
+
+**1. Productos Tecnológicos (MVP1) — Importación por encargo**
+- El cliente quiere un producto específico (celular, laptop, tablet, accesorios, etc.)
+- Puede traerlo de: eBay, Amazon, tiendas de USA, etc.
+- NIX IMPORTS se encarga de: comprar, gestionar el envío internacional, pasar aduana, y entregar al cliente
+- Se cobra: precio del producto + costos de importación + comisión (% configurable)
+- Tipos de cliente: personas individuales (la mayoría), a veces pequeños negocios
+
+**2. Perfumes (MVP futuro) — Compra y reventa**
+- La empresa importa lotes de perfumes directamente de proveedores
+- Se vende a dos tipos de clientes:
+  - **Minoristas:** compran pocas unidades a precio más alto
+  - **Mayoristas:** compran en volumen a precio con descuento
+- Aquí SÍ hay inventario propio que gestionar
+
+**Alcance actual:** Solo panel de administrador. No hay portal de cliente ni app móvil.
+
+---
+
+## MVP1 - Gestión de Importaciones de Productos Tecnológicos
+
+### Flujo del negocio (paso a paso)
+1. **Solicitud:** Cliente contacta a NIX IMPORTS (WhatsApp, presencial, etc.) y dice qué producto quiere
+2. **Registro:** Admin crea el pedido en el sistema con los datos del cliente y el producto (link, descripción)
+3. **Cotización:** Admin investiga precios, ingresa costos (producto + envío + impuestos) y el sistema calcula el total con comisión
+4. **Aprobación:** Se le envía la cotización al cliente. Si acepta, el pedido pasa a "Aprobado" y el cliente paga (total o anticipo)
+5. **Compra:** Admin realiza la compra en el sitio de origen (eBay, Amazon, etc.) y registra el comprobante
+6. **Tránsito:** El producto está en camino. Se registra número de tracking y se monitorea
+7. **Recepción:** Producto llega a la bodega/oficina de NIX IMPORTS. Se registra en inventario temporal
+8. **Entrega:** Se entrega al cliente, se confirma recepción y se cierra el pedido
+
+### Canales de contacto con el cliente
+- WhatsApp (principal)
+- Presencial
+- El sistema NO tiene portal de cliente — toda la comunicación es externa
+
+### Categorías de productos tecnológicos
+- Celulares / Smartphones
+- Laptops / Notebooks
+- Tablets
+- Accesorios (cargadores, cases, audífonos, etc.)
+- Otros (consolas, componentes, etc.)
+
+---
+
+## Product Backlog - MVP1
+
+### Epic 1: Gestión de Pedidos de Importación
+
+| ID | Historia de Usuario | Prioridad | Puntos | Sprint |
+|----|-------------------|-----------|--------|--------|
+| NIX-001 | Registrar pedido de importación | Alta | 8 | 1 |
+| NIX-002 | Calcular costo total y cotización | Alta | 5 | 1 |
+| NIX-003 | Cambiar estado del pedido | Alta | 5 | 1 |
+| NIX-004 | Listar pedidos con filtros | Alta | 5 | 1 |
+| NIX-005 | Registrar link de compra y tracking | Media | 3 | 2 |
+
+### Epic 2: Gestión de Clientes
+
+| ID | Historia de Usuario | Prioridad | Puntos | Sprint |
+|----|-------------------|-----------|--------|--------|
+| NIX-006 | Registrar clientes | Alta | 5 | 1 |
+| NIX-007 | Historial de pedidos por cliente | Media | 3 | 2 |
+
+### Epic 3: Inventario
+
+| ID | Historia de Usuario | Prioridad | Puntos | Sprint |
+|----|-------------------|-----------|--------|--------|
+| NIX-008 | Registrar productos en almacén | Alta | 5 | 2 |
+| NIX-009 | Marcar producto como entregado | Alta | 3 | 2 |
+| NIX-010 | Ver inventario actual | Media | 5 | 2 |
+
+### Epic 4: Configuración y Costos
+
+| ID | Historia de Usuario | Prioridad | Puntos | Sprint |
+|----|-------------------|-----------|--------|--------|
+| NIX-011 | Configurar comisión | Alta | 3 | 1 |
+| NIX-012 | Registrar costos adicionales por pedido | Media | 5 | 2 |
+
+### Epic 5: Dashboard
+
+| ID | Historia de Usuario | Prioridad | Puntos | Sprint |
+|----|-------------------|-----------|--------|--------|
+| NIX-013 | Dashboard resumen del negocio | Media | 8 | 2 |
+
+### Resumen de puntos
+
+| Sprint | Historias | Puntos totales |
+|--------|-----------|----------------|
+| 1 | NIX-001, 002, 003, 004, 006, 011 | **31** |
+| 2 | NIX-005, 007, 008, 009, 010, 012, 013 | **32** |
+
+---
+
+## Roadmap General
+
+**Dedicación:** ~2 horas diarias
+**Duración de sprint:** 2 semanas (≈28 horas por sprint)
+**Inicio del proyecto:** 2026-10-28
+**Estimación total:** ~4 meses (8 sprints)
+
+| Sprint | Fechas | Enfoque | MVP |
+|--------|--------|---------|-----|
+| 1 | 28 Oct - 10 Nov | Core: clientes, pedidos, cotización, estados | MVP1 |
+| 2 | 11 Nov - 24 Nov | Tracking, inventario, costos adicionales, dashboard básico | MVP1 |
+| 3 | 25 Nov - 08 Dic | Reportes, búsqueda avanzada, notificaciones, pulido UI | MVP1 |
+| 4 | 09 Dic - 22 Dic | Módulo perfumes: catálogo, precios mayorista/minorista | MVP2 |
+| 5 | 23 Dic - 05 Ene | Ventas de perfumes, stock, gestión de proveedores | MVP2 |
+| 6 | 06 Ene - 19 Ene | Dashboard avanzado, reportes financieros, métricas | MVP3 |
+| 7 | 20 Ene - 02 Feb | Roles/permisos, auditoría, respaldos, seguridad | MVP3 |
+| 8 | 03 Feb - 16 Feb | Testing final, bugfixes, deploy producción, documentación | Release |
+
+---
+
+## Sprint 1 - Scope
+
+**Fechas:** 28 Oct - 10 Nov 2026
+**Objetivo:** Poder registrar un pedido completo desde la solicitud hasta la cotización.
+
+**Historias incluidas:** NIX-001, NIX-002, NIX-003, NIX-004, NIX-006, NIX-011
+
+### NIX-001: Registrar pedido de importación
+**Prioridad:** Alta | **Puntos:** 8 | **Sprint:** 1
+**Como** admin, **quiero** registrar un nuevo pedido de importación con los datos del cliente y el producto solicitado, **para** tener control de cada solicitud.
+
+**Descripción:**
+El admin recibe una solicitud de un cliente que quiere importar un producto tecnológico (celular, laptop, etc.) desde un sitio como eBay o Amazon. Debe poder crear un pedido asociando al cliente, describiendo el producto y registrando el link de origen.
+
+**Criterios de aceptación:**
+- [ ] Puedo crear un pedido seleccionando un cliente existente o creando uno nuevo desde el formulario
+- [ ] Puedo ingresar: nombre del producto, descripción, URL de origen, categoría (celular/laptop/tablet/otro)
+- [ ] El pedido se crea con estado "Solicitado" y fecha de creación automática
+- [ ] El pedido genera un código único visible (NIX-XXXX)
+- [ ] Se muestra confirmación al guardar exitosamente
+- [ ] No puedo crear un pedido sin cliente ni producto
+
+---
+
+### NIX-002: Calcular costo total y cotización
+**Prioridad:** Alta | **Puntos:** 5 | **Sprint:** 1
+**Como** admin, **quiero** calcular el costo total del pedido (precio + envío + impuestos + comisión), **para** generar una cotización al cliente.
+
+**Descripción:**
+Una vez registrado el pedido, el admin ingresa los costos reales del producto. El sistema calcula automáticamente la comisión según el porcentaje configurado y muestra el costo total que se le cobrará al cliente.
+
+**Criterios de aceptación:**
+- [ ] Puedo ingresar: precio del producto (USD), costo de envío internacional, impuestos estimados
+- [ ] El sistema aplica automáticamente el % de comisión configurado (NIX-011)
+- [ ] Se muestra un desglose: precio + envío + impuestos + comisión = total
+- [ ] Puedo ajustar la comisión manualmente para un pedido específico si es necesario
+- [ ] Al guardar la cotización, el estado cambia automáticamente a "Cotizado"
+- [ ] El total se muestra en la moneda local
+
+---
+
+### NIX-003: Cambiar estado del pedido
+**Prioridad:** Alta | **Puntos:** 5 | **Sprint:** 1
+**Como** admin, **quiero** cambiar el estado de un pedido, **para** rastrear el progreso de cada importación.
+
+**Descripción:**
+Los pedidos pasan por un flujo definido. El admin debe poder avanzar (o retroceder) el estado del pedido, y cada cambio debe quedar registrado con fecha.
+
+**Criterios de aceptación:**
+- [ ] Puedo cambiar el estado siguiendo el flujo: Solicitado → Cotizado → Aprobado → Comprado → En tránsito → Recibido → Entregado
+- [ ] Puedo marcar un pedido como "Cancelado" desde cualquier estado (excepto Entregado)
+- [ ] Cada cambio de estado registra la fecha automáticamente
+- [ ] Se muestra visualmente el estado actual y el historial de cambios
+- [ ] No puedo saltar estados (ej: de Solicitado a Comprado directamente)
+
+---
+
+### NIX-004: Listar pedidos con filtros
+**Prioridad:** Alta | **Puntos:** 5 | **Sprint:** 1
+**Como** admin, **quiero** ver una lista de todos los pedidos con filtros por estado y fecha, **para** gestionar el trabajo pendiente.
+
+**Descripción:**
+Vista principal de pedidos en formato tabla con la información más relevante y filtros para encontrar rápidamente lo que se necesita.
+
+**Criterios de aceptación:**
+- [ ] Veo una tabla con: código, cliente, producto, estado, fecha de solicitud, total
+- [ ] Puedo filtrar por estado (uno o varios)
+- [ ] Puedo filtrar por rango de fechas
+- [ ] Puedo buscar por nombre de cliente o producto
+- [ ] Puedo ordenar por fecha o estado
+- [ ] Al hacer clic en un pedido, voy a su detalle
+- [ ] Veo un contador de resultados
+
+---
+
+### NIX-006: Registrar clientes
+**Prioridad:** Alta | **Puntos:** 5 | **Sprint:** 1
+**Como** admin, **quiero** registrar clientes con sus datos de contacto, **para** asociarlos a los pedidos.
+
+**Descripción:**
+CRUD básico de clientes. Cada cliente tiene datos de contacto y se puede asociar a uno o más pedidos de importación.
+
+**Criterios de aceptación:**
+- [ ] Puedo crear un cliente con: nombre completo, teléfono, email (opcional), dirección (opcional), notas
+- [ ] Puedo editar los datos de un cliente existente
+- [ ] Puedo ver la lista de todos los clientes con búsqueda por nombre o teléfono
+- [ ] No puedo crear dos clientes con el mismo teléfono
+- [ ] Puedo ver cuántos pedidos tiene asociados cada cliente en la lista
+
+---
+
+### NIX-011: Configurar comisión
+**Prioridad:** Alta | **Puntos:** 3 | **Sprint:** 1
+**Como** admin, **quiero** configurar el porcentaje de comisión por importación, **para** que se aplique automáticamente a las cotizaciones.
+
+**Descripción:**
+Pantalla de configuración donde el admin define el porcentaje de comisión por defecto. Este valor se usa automáticamente al calcular cotizaciones, pero puede ajustarse por pedido.
+
+**Criterios de aceptación:**
+- [ ] Puedo establecer un porcentaje de comisión por defecto (ej: 15%)
+- [ ] El valor se persiste y se mantiene entre sesiones
+- [ ] Al crear una cotización (NIX-002), se usa este porcentaje automáticamente
+- [ ] Puedo ver el valor actual de comisión configurado
+- [ ] El cambio de comisión no afecta pedidos ya cotizados
+
+---
+
+**Entidades principales:**
+- **Cliente:** nombre, teléfono, email, dirección
+- **Pedido:** cliente, producto_solicitado, url_producto, precio_producto, costo_envio, impuestos, comision_porcentaje, comision_monto, costo_total, estado, fecha_solicitud, notas
+- **Configuración:** comision_default (%)
+
+**Estados del pedido:**
+`Solicitado → Cotizado → Aprobado → Comprado → En tránsito → Recibido → Entregado → Cancelado`
+
+---
+
+## Stack Técnico
+
+| Capa | Tecnología |
+|------|-----------|
+| **Frontend** | React + Vite (SPA) |
+| **Lenguaje** | TypeScript |
+| **Estilos** | Tailwind CSS |
+| **Backend/DB** | Supabase (PostgreSQL + Auth + API REST) |
+| **ORM/Cliente** | Supabase JS Client |
+| **Contenedores** | Docker + Docker Compose (dev local) |
+| **Hosting** | Vercel (frontend) + Supabase Cloud (backend) |
+| **CI/CD** | GitHub Actions |
+| **Repositorio** | GitHub |
+| **Package Manager** | npm |
+| **Linter/Formatter** | ESLint + Prettier |
+| **Testing** | Vitest |
+
+---
+
+## Estructura del Proyecto
+
+```
+nix-imports/
+├── .github/
+│   └── workflows/          # GitHub Actions (CI/CD)
+│       └── ci.yml
+├── docker/
+│   └── docker-compose.yml  # Supabase local para desarrollo
+├── src/
+│   ├── assets/             # Imágenes, íconos
+│   ├── components/         # Componentes reutilizables UI
+│   │   └── ui/             # Botones, inputs, modales, tablas
+│   ├── layouts/            # Layout principal del admin
+│   ├── pages/              # Páginas/vistas
+│   │   ├── Dashboard.tsx
+│   │   ├── Pedidos.tsx
+│   │   ├── PedidoDetalle.tsx
+│   │   ├── Clientes.tsx
+│   │   ├── Inventario.tsx
+│   │   └── Configuracion.tsx
+│   ├── hooks/              # Custom hooks
+│   ├── lib/
+│   │   └── supabase.ts     # Cliente de Supabase
+│   ├── types/              # Tipos TypeScript (Cliente, Pedido, etc.)
+│   ├── utils/              # Funciones auxiliares (cálculos, formateo)
+│   ├── App.tsx
+│   └── main.tsx
+├── supabase/
+│   └── migrations/         # Migraciones SQL de la base de datos
+├── .env.example
+├── .eslintrc.cjs
+├── .prettierrc
+├── index.html
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── tailwind.config.ts
+└── PROJECT.md
+```
+
+---
+
+## Notas
+- El sistema es solo para el administrador (no hay portal de cliente)
+- MVP1 = solo productos tecnológicos (celulares, laptops, etc.)
+- Los perfumes y otras líneas se agregarán en MVPs futuros
