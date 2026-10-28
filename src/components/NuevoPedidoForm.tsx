@@ -47,6 +47,7 @@ interface NuevoPedidoFormProps {
 export function NuevoPedidoForm({ clientes, onSubmit, onCrearCliente, onCancel }: NuevoPedidoFormProps) {
   const [mostrarNuevoCliente, setMostrarNuevoCliente] = useState(false)
   const [guardandoCliente, setGuardandoCliente] = useState(false)
+  const [errorCliente, setErrorCliente] = useState<string | null>(null)
   const [enviando, setEnviando] = useState(false)
 
   const pedidoForm = useForm<PedidoFormValues>({
@@ -67,7 +68,11 @@ export function NuevoPedidoForm({ clientes, onSubmit, onCrearCliente, onCancel }
       clienteForm.reset()
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Error al guardar cliente'
-      clienteForm.setError('telefono', { message: msg.includes('unique') ? 'Ya existe un cliente con ese teléfono' : msg })
+      if (msg.includes('unique')) {
+        clienteForm.setError('telefono', { message: 'Ya existe un cliente con ese teléfono' })
+      } else {
+        setErrorCliente(msg)
+      }
     } finally {
       setGuardandoCliente(false)
     }
@@ -108,10 +113,13 @@ export function NuevoPedidoForm({ clientes, onSubmit, onCrearCliente, onCancel }
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 space-y-3">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-blue-700">Crear nuevo cliente</p>
-              <button type="button" onClick={() => setMostrarNuevoCliente(false)}>
+              <button type="button" onClick={() => { setMostrarNuevoCliente(false); setErrorCliente(null) }}>
                 <X size={16} className="text-gray-400 hover:text-gray-600" />
               </button>
             </div>
+            {errorCliente && (
+              <p className="text-xs text-red-600 bg-red-50 rounded px-2 py-1">✗ {errorCliente}</p>
+            )}
             <div className="grid grid-cols-2 gap-3">
               <Input
                 label="Nombre completo"
