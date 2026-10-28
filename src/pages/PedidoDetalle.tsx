@@ -96,7 +96,9 @@ export function PedidoDetalle() {
                 </span>
               )}
             </div>
-            {config && (
+            {!config ? (
+              <p className="text-sm text-gray-400">Cargando configuración...</p>
+            ) : (
               <CotizacionForm
                 comisionDefault={config.comision_default}
                 soloLectura={!puedeEditar}
