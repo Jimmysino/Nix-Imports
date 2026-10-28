@@ -302,6 +302,26 @@ nix-imports/
 
 ---
 
+## Estándares de Desarrollo
+
+### Checklist antes de dar una HU por terminada
+Antes de declarar cualquier historia como completa, verificar:
+- [ ] Todos los criterios de aceptación están implementados
+- [ ] Los tipos TypeScript compilan sin errores (`npx tsc --noEmit`)
+- [ ] Los errores de Supabase se capturan y muestran al usuario
+- [ ] Los estados de carga (loading) tienen indicador visual
+- [ ] No hay optimistic updates con IDs falsos — usar refetch
+- [ ] El flujo happy path funciona end-to-end contra Supabase real
+- [ ] El flujo de error (campo faltante, duplicado, red caída) está cubierto
+
+### Reglas de código
+- No agregar autoría de herramientas en los commits
+- No dejar `console.log` en el código
+- Validación en el frontend con Zod, no confiar solo en el backend
+- Cada hook maneja su propio estado de `loading` y `error`
+
+---
+
 ## Convención de Commits
 
 Seguimos **Conventional Commits**. Formato: `tipo(scope): descripción`

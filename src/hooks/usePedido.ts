@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import type { HistorialEstado, Pedido } from '../types/database'
+import type { EstadoPedido, HistorialEstado, Pedido } from '../types/database'
+import { getSiguienteEstado, puedeCancelar } from '../utils/estados'
 
 export function usePedido(id: string) {
   const [pedido, setPedido] = useState<Pedido | null>(null)
@@ -59,5 +60,36 @@ export function usePedido(id: string) {
     return data
   }
 
-  return { pedido, historial, loading, error, actualizarCotizacion, refetch: fetchPedido }
+  async function cambiarEstado(nuevoEstado: EstadoPedido, notas?: string) {
+    if (!pedido) return
+
+    // Validar que no se salten estados
+    if (nuevoEstado !== 'Cancelado') {
+      const siguiente = getSiguienteEstado(pedido.estado)
+      if (siguiente !== nuevoEstado) {
+        throw new Error(`No se puede pasar de "${pedido.estado}" a "${nuevoEstado}" directamente`)
+      }
+    } else {
+      if (!puedeCancelar(pedido.estado)) {
+        throw new Error('Este pedido no puede cancelarse')
+      }
+    }
+
+    const { error } = await supabase
+      .from('pedidos')
+      .update({ estado: nuevoEstado })
+      .eq('id', pedido.id)
+    if (error) throw new Error(error.message)
+
+    const { error: histError } = await supabase.from('historial_estados').insert({
+      pedido_id: pedido.id,
+      estado: nuevoEstado,
+      notas: notas ?? null,
+    })
+    if (histError) throw new Error(histError.message)
+
+    await fetchPedido()
+  }
+
+  return { pedido, historial, loading, error, actualizarCotizacion, cambiarEstado, refetch: fetchPedido }
 }

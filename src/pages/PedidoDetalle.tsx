@@ -4,12 +4,13 @@ import { usePedido } from '../hooks/usePedido'
 import { useConfiguracion } from '../hooks/useConfiguracion'
 import { Badge } from '../components/ui/Badge'
 import { CotizacionForm } from '../components/CotizacionForm'
+import { CambiarEstado } from '../components/CambiarEstado'
 import { formatUSD } from '../utils/cotizacion'
 
 export function PedidoDetalle() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { pedido, historial, loading, error, actualizarCotizacion } = usePedido(id!)
+  const { pedido, historial, loading, error, actualizarCotizacion, cambiarEstado } = usePedido(id!)
   const { config } = useConfiguracion()
 
   if (loading) {
@@ -40,6 +41,12 @@ export function PedidoDetalle() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Cambiar estado */}
+      <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <h2 className="font-semibold text-gray-700 mb-4">Estado del pedido</h2>
+        <CambiarEstado estadoActual={pedido.estado} onCambiar={cambiarEstado} />
       </div>
 
       <div className="grid grid-cols-3 gap-6">
