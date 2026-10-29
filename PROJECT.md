@@ -200,6 +200,25 @@ Vista principal de pedidos en formato tabla con la información más relevante y
 
 ---
 
+### NIX-005: Registrar link de compra y tracking
+**Estado Scrum:** Implementada
+**Prioridad:** Media | **Puntos:** 3 | **Sprint:** 2
+**Como** admin, **quiero** registrar el link de compra y los datos de seguimiento de un pedido, **para** localizar el producto comprado y monitorear su tránsito.
+
+**Descripción:**
+Después de realizar la compra, el admin puede guardar el enlace utilizado para comprar el producto, el número de tracking y el enlace de seguimiento. Estos datos quedan visibles en el detalle del pedido.
+
+**Criterios de aceptación:**
+- [x] Puedo registrar el link de compra del pedido
+- [x] Puedo registrar el número de tracking una vez enviado el producto
+- [x] Puedo registrar el enlace de seguimiento
+- [x] Los datos se guardan y permanecen asociados al pedido
+- [x] Los datos se pueden consultar desde el detalle del pedido
+- [x] Los enlaces se pueden abrir en otra pestaña
+- [x] Los enlaces inválidos se rechazan antes de guardarlos
+
+---
+
 ### NIX-006: Registrar clientes
 **Prioridad:** Alta | **Puntos:** 5 | **Sprint:** 1
 **Como** admin, **quiero** registrar clientes con sus datos de contacto, **para** asociarlos a los pedidos.

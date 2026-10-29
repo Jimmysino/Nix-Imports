@@ -67,6 +67,25 @@ export function usePedido(id: string) {
     return data
   }
 
+  async function actualizarCompra(datos: {
+    link_compra: string | null
+    numero_tracking: string | null
+    url_tracking: string | null
+  }) {
+    if (!pedido) throw new Error('Pedido no encontrado')
+
+    const { data, error } = await supabase
+      .from('pedidos')
+      .update(datos)
+      .eq('id', pedido.id)
+      .select('*, cliente:clientes(*)')
+      .single()
+    if (error) throw new Error(error.message)
+
+    await fetchPedido()
+    return data
+  }
+
   async function cambiarEstado(nuevoEstado: EstadoPedido, notas?: string) {
     if (!pedido) return
 
@@ -101,5 +120,5 @@ export function usePedido(id: string) {
     await fetchPedido()
   }
 
-  return { pedido, historial, loading, error, actualizarCotizacion, cambiarEstado, refetch: fetchPedido }
+  return { pedido, historial, loading, error, actualizarCotizacion, actualizarCompra, cambiarEstado, refetch: fetchPedido }
 }

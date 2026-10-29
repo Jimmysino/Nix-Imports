@@ -5,12 +5,13 @@ import { useConfiguracion } from '../hooks/useConfiguracion'
 import { Badge } from '../components/ui/Badge'
 import { CotizacionForm } from '../components/CotizacionForm'
 import { CambiarEstado } from '../components/CambiarEstado'
+import { CompraTracking } from '../components/CompraTracking'
 import { formatUSD } from '../utils/cotizacion'
 
 export function PedidoDetalle() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { pedido, historial, loading, error, actualizarCotizacion, cambiarEstado } = usePedido(id!)
+  const { pedido, historial, loading, error, actualizarCotizacion, actualizarCompra, cambiarEstado } = usePedido(id!)
   const { config } = useConfiguracion()
 
   if (loading) {
@@ -91,6 +92,17 @@ export function PedidoDetalle() {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Compra y tracking */}
+          <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-4">
+            <h2 className="font-semibold text-gray-700">Compra y tracking</h2>
+            <CompraTracking
+              linkCompra={pedido.link_compra}
+              numeroTracking={pedido.numero_tracking}
+              urlTracking={pedido.url_tracking}
+              onGuardar={actualizarCompra}
+            />
           </div>
 
           {/* Cotización */}

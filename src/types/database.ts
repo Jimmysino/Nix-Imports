@@ -33,6 +33,9 @@ export interface Pedido {
   producto_nombre: string
   producto_descripcion: string | null
   producto_url: string | null
+  link_compra: string | null
+  numero_tracking: string | null
+  url_tracking: string | null
   categoria: CategoriaTech
   estado: EstadoPedido
   precio_usd: number | null
@@ -66,24 +69,36 @@ export interface Database {
     Tables: {
       clientes: {
         Row: Cliente
-        Insert: Omit<Cliente, 'id' | 'created_at'>
+        Insert: Omit<Cliente, 'id' | 'created_at' | 'email' | 'direccion' | 'notas'> & {
+          email?: string | null
+          direccion?: string | null
+          notas?: string | null
+        }
         Update: Partial<Omit<Cliente, 'id' | 'created_at'>>
+        Relationships: []
       }
       pedidos: {
         Row: Pedido
         Insert: Omit<Pedido, 'id' | 'codigo' | 'created_at' | 'updated_at' | 'cliente'>
         Update: Partial<Omit<Pedido, 'id' | 'codigo' | 'created_at' | 'cliente'>>
+        Relationships: []
       }
       historial_estados: {
         Row: HistorialEstado
         Insert: Omit<HistorialEstado, 'id' | 'fecha'>
-        Update: never
+        Update: Partial<Omit<HistorialEstado, 'id' | 'pedido_id' | 'fecha'>>
+        Relationships: []
       }
       configuracion: {
         Row: Configuracion
         Insert: Omit<Configuracion, 'id' | 'updated_at'>
         Update: Partial<Omit<Configuracion, 'id'>>
+        Relationships: []
       }
     }
+    Views: { [_ in never]: never }
+    Functions: { [_ in never]: never }
+    Enums: { [_ in never]: never }
+    CompositeTypes: { [_ in never]: never }
   }
 }
