@@ -7,11 +7,11 @@ import { Button } from './ui/Button'
 import { calcularCotizacion, formatUSD, formatLocal } from '../utils/cotizacion'
 
 const schema = z.object({
-  precio_usd:          z.coerce.number().positive('Debe ser mayor a 0'),
-  costo_envio_usd:     z.coerce.number().min(0, 'No puede ser negativo'),
-  impuestos_usd:       z.coerce.number().min(0, 'No puede ser negativo'),
-  comision_porcentaje: z.coerce.number().min(0).max(100, 'Máximo 100%'),
-  tipo_cambio:         z.coerce.number().positive('Debe ser mayor a 0'),
+  precio_usd:          z.number({ error: 'Debe ser un número válido' }).positive('Debe ser mayor a 0'),
+  costo_envio_usd:     z.number({ error: 'Debe ser un número válido' }).min(0, 'No puede ser negativo'),
+  impuestos_usd:       z.number({ error: 'Debe ser un número válido' }).min(0, 'No puede ser negativo'),
+  comision_porcentaje: z.number({ error: 'Debe ser un número válido' }).min(0).max(100, 'Máximo 100%'),
+  tipo_cambio:         z.number({ error: 'Debe ser un número válido' }).positive('Debe ser mayor a 0'),
 })
 
 type CotizacionValues = z.infer<typeof schema>
@@ -81,7 +81,7 @@ export function CotizacionForm({ comisionDefault, valoresIniciales, onGuardar, s
           min="0"
           required
           disabled={soloLectura}
-          {...register('precio_usd')}
+          {...register('precio_usd', { valueAsNumber: true })}
           error={errors.precio_usd?.message}
         />
         <Input
@@ -90,7 +90,7 @@ export function CotizacionForm({ comisionDefault, valoresIniciales, onGuardar, s
           step="0.01"
           min="0"
           disabled={soloLectura}
-          {...register('costo_envio_usd')}
+          {...register('costo_envio_usd', { valueAsNumber: true })}
           error={errors.costo_envio_usd?.message}
         />
         <Input
@@ -99,7 +99,7 @@ export function CotizacionForm({ comisionDefault, valoresIniciales, onGuardar, s
           step="0.01"
           min="0"
           disabled={soloLectura}
-          {...register('impuestos_usd')}
+          {...register('impuestos_usd', { valueAsNumber: true })}
           error={errors.impuestos_usd?.message}
         />
         <Input
@@ -109,7 +109,7 @@ export function CotizacionForm({ comisionDefault, valoresIniciales, onGuardar, s
           min="0"
           max="100"
           disabled={soloLectura}
-          {...register('comision_porcentaje')}
+          {...register('comision_porcentaje', { valueAsNumber: true })}
           error={errors.comision_porcentaje?.message}
         />
         <Input
@@ -119,7 +119,7 @@ export function CotizacionForm({ comisionDefault, valoresIniciales, onGuardar, s
           min="0"
           required
           disabled={soloLectura}
-          {...register('tipo_cambio')}
+          {...register('tipo_cambio', { valueAsNumber: true })}
           error={errors.tipo_cambio?.message}
         />
       </div>
