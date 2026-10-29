@@ -254,6 +254,24 @@ Desde la lista de clientes, el admin puede abrir el historial de pedidos de cada
 
 ---
 
+### NIX-008: Registrar productos en almacén
+**Estado Scrum:** Implementada
+**Prioridad:** Alta | **Puntos:** 5 | **Sprint:** 2
+**Como** admin, **quiero** registrar los productos recibidos en el almacén, **para** tener control del inventario temporal antes de entregarlos al cliente.
+
+**Descripción:**
+Cuando un pedido llega a la oficina, el admin puede registrar el producto en el inventario y asociarlo opcionalmente a su pedido. La información incluye nombre, número de serie, cantidad, fecha de recepción y notas.
+
+**Criterios de aceptación:**
+- [x] Puedo registrar un producto recibido en el almacén
+- [x] Puedo asociar el producto a un pedido existente
+- [x] Puedo ingresar nombre, número de serie, cantidad, fecha y notas
+- [x] Los productos quedan visibles mientras estén pendientes de entrega
+- [x] No puedo registrar cantidades menores a uno
+- [x] El producto registrado muestra su fecha de recepción
+
+---
+
 ### NIX-011: Configurar comisión
 **Prioridad:** Alta | **Puntos:** 3 | **Sprint:** 1
 **Como** admin, **quiero** configurar el porcentaje de comisión por importación, **para** que se aplique automáticamente a las cotizaciones.

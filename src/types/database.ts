@@ -50,6 +50,19 @@ export interface Pedido {
   updated_at: string
 }
 
+export interface InventarioItem {
+  id: string
+  pedido_id: string | null
+  producto_nombre: string
+  numero_serie: string | null
+  cantidad: number
+  estado: 'En almacén' | 'Entregado'
+  fecha_recepcion: string
+  fecha_entrega: string | null
+  notas: string | null
+  created_at: string
+}
+
 export interface HistorialEstado {
   id: string
   pedido_id: string
@@ -81,6 +94,12 @@ export interface Database {
         Row: Pedido
         Insert: Omit<Pedido, 'id' | 'codigo' | 'created_at' | 'updated_at' | 'cliente'>
         Update: Partial<Omit<Pedido, 'id' | 'codigo' | 'created_at' | 'cliente'>>
+        Relationships: []
+      }
+      inventario: {
+        Row: InventarioItem
+        Insert: Omit<InventarioItem, 'id' | 'created_at'>
+        Update: Partial<Omit<InventarioItem, 'id' | 'created_at'>>
         Relationships: []
       }
       historial_estados: {
