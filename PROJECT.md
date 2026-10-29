@@ -310,18 +310,19 @@ La pantalla de inventario muestra todos los productos registrados, con un resume
 ---
 
 ### NIX-011: Configurar comisión
+**Estado Scrum:** Implementada
 **Prioridad:** Alta | **Puntos:** 3 | **Sprint:** 1
 **Como** admin, **quiero** configurar el porcentaje de comisión por importación, **para** que se aplique automáticamente a las cotizaciones.
 
 **Descripción:**
-Pantalla de configuración donde el admin define el porcentaje de comisión por defecto. Este valor se usa automáticamente al calcular cotizaciones, pero puede ajustarse por pedido.
+La pantalla de configuración permite consultar y modificar el porcentaje de comisión por defecto. El valor se persiste en Supabase y las nuevas cotizaciones lo utilizan automáticamente, mientras que los pedidos ya cotizados conservan su comisión guardada.
 
 **Criterios de aceptación:**
-- [ ] Puedo establecer un porcentaje de comisión por defecto (ej: 15%)
-- [ ] El valor se persiste y se mantiene entre sesiones
-- [ ] Al crear una cotización (NIX-002), se usa este porcentaje automáticamente
-- [ ] Puedo ver el valor actual de comisión configurado
-- [ ] El cambio de comisión no afecta pedidos ya cotizados
+- [x] Puedo establecer un porcentaje de comisión por defecto (ej: 15%)
+- [x] El valor se persiste y se mantiene entre sesiones
+- [x] Al crear una cotización (NIX-002), se usa este porcentaje automáticamente
+- [x] Puedo ver el valor actual de comisión configurado
+- [x] El cambio de comisión no afecta pedidos ya cotizados
 
 ---
 
