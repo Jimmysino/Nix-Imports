@@ -272,6 +272,24 @@ Cuando un pedido llega a la oficina, el admin puede registrar el producto en el 
 
 ---
 
+### NIX-009: Marcar producto como entregado
+**Estado Scrum:** Implementada
+**Prioridad:** Alta | **Puntos:** 3 | **Sprint:** 2
+**Como** admin, **quiero** marcar un producto del almacén como entregado, **para** mantener actualizado el inventario temporal y saber cuándo se realizó la entrega.
+
+**Descripción:**
+Desde el inventario, el admin puede marcar como entregado cada producto que ya salió de la oficina. El sistema registra automáticamente la fecha de entrega y cambia su estado para que deje de contabilizarse como producto pendiente en almacén.
+
+**Criterios de aceptación:**
+- [x] Veo una acción para marcar cada producto pendiente como entregado
+- [x] El estado cambia de `En almacén` a `Entregado`
+- [x] Se registra automáticamente la fecha de entrega
+- [x] La fecha de entrega se muestra en el listado
+- [x] Los productos entregados dejan de contabilizarse como pendientes en almacén
+- [x] El cambio se conserva en Supabase
+
+---
+
 ### NIX-011: Configurar comisión
 **Prioridad:** Alta | **Puntos:** 3 | **Sprint:** 1
 **Como** admin, **quiero** configurar el porcentaje de comisión por importación, **para** que se aplique automáticamente a las cotizaciones.

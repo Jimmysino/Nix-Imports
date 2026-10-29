@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Plus, X } from 'lucide-react'
+import { Check, Plus, X } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Select } from '../components/ui/Select'
@@ -14,6 +14,7 @@ export function Inventario() {
   const [loading, setLoading] = useState(true)
   const [mostrarForm, setMostrarForm] = useState(false)
   const [guardando, setGuardando] = useState(false)
+  const [entregando, setEntregando] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [pedidoId, setPedidoId] = useState('')
   const [productoNombre, setProductoNombre] = useState('')
@@ -65,6 +66,25 @@ export function Inventario() {
     setNumeroSerie('')
     setCantidad('1')
     setNotas('')
+  }
+
+  async function marcarEntregado(id: string) {
+    setEntregando(id)
+    setError(null)
+    const fechaEntrega = new Date().toISOString()
+    const { error } = await supabase
+      .from('inventario')
+      .update({ estado: 'Entregado', fecha_entrega: fechaEntrega })
+      .eq('id', id)
+
+    setEntregando(null)
+    if (error) {
+      setError(error.message)
+      return
+    }
+    setItems((actuales) => actuales.map((item) => item.id === id
+      ? { ...item, estado: 'Entregado', fecha_entrega: fechaEntrega }
+      : item))
   }
 
   return (
@@ -119,6 +139,7 @@ export function Inventario() {
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Serie</th>
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Cantidad</th>
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Recepción</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Entrega</th>
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Estado</th>
             </tr></thead>
             <tbody>{items.map((item) => (
@@ -127,7 +148,23 @@ export function Inventario() {
                 <td className="px-4 py-3 text-gray-500">{item.numero_serie || '—'}</td>
                 <td className="px-4 py-3 text-gray-600">{item.cantidad}</td>
                 <td className="px-4 py-3 text-gray-500">{new Date(item.fecha_recepcion).toLocaleDateString('es-AR')}</td>
-                <td className="px-4 py-3"><span className={`rounded-full px-2 py-1 text-xs font-medium ${item.estado === 'En almacén' ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-700'}`}>{item.estado}</span></td>
+                <td className="px-4 py-3 text-gray-500">{item.fecha_entrega ? new Date(item.fecha_entrega).toLocaleDateString('es-AR') : '—'}</td>
+                <td className="px-4 py-3">
+                  {item.estado === 'En almacén' ? (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      className="gap-1"
+                      loading={entregando === item.id}
+                      onClick={() => marcarEntregado(item.id)}
+                    >
+                      <Check size={14} /> Marcar entregado
+                    </Button>
+                  ) : (
+                    <span className="rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700">Entregado</span>
+                  )}
+                </td>
               </tr>
             ))}</tbody>
           </table>
