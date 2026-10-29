@@ -345,6 +345,27 @@ Desde el detalle de un pedido el admin puede agregar conceptos y montos en USD q
 
 ---
 
+### NIX-013: Dashboard resumen del negocio
+**Estado Scrum:** Implementada
+**Prioridad:** Media | **Puntos:** 8 | **Sprint:** 2
+**Como** admin, **quiero** consultar un resumen del negocio, **para** conocer rápidamente el estado operativo y financiero de los pedidos.
+
+**Descripción:**
+El dashboard centraliza indicadores generales de pedidos, facturación, comisiones, clientes y productos en almacén. También muestra los pedidos recientes y la distribución actual por estado, con navegación directa al detalle de cada pedido.
+
+**Criterios de aceptación:**
+- [x] Puedo ver la cantidad de pedidos activos
+- [x] Puedo ver la cantidad de pedidos entregados
+- [x] Puedo consultar el total facturado de pedidos entregados
+- [x] Puedo ver las comisiones cobradas en pedidos entregados
+- [x] Puedo ver la cantidad de clientes registrados
+- [x] Puedo ver la cantidad de productos pendientes en almacén
+- [x] Puedo consultar los pedidos recientes y navegar a su detalle
+- [x] Puedo ver la distribución de pedidos por estado
+- [x] Se muestran estados de carga y error al consultar los datos
+
+---
+
 **Entidades principales:**
 - **Cliente:** nombre, teléfono, email, dirección
 - **Pedido:** cliente, producto_solicitado, url_producto, precio_producto, costo_envio, impuestos, comision_porcentaje, comision_monto, costo_total, estado, fecha_solicitud, notas

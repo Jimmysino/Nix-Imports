@@ -8,6 +8,7 @@ const estadosActivos: EstadoPedido[] = [
   'Aprobado',
   'Comprado',
   'En tránsito',
+  'Recibido',
 ]
 
 interface DashboardData {
@@ -17,6 +18,8 @@ interface DashboardData {
   totalComisiones: number
   pedidosRecientes: Pedido[]
   pedidosPorEstado: Array<{ estado: EstadoPedido; cantidad: number }>
+  clientesRegistrados: number
+  productosEnAlmacen: number
 }
 
 export function useDashboard() {
@@ -27,6 +30,8 @@ export function useDashboard() {
     totalComisiones: 0,
     pedidosRecientes: [],
     pedidosPorEstado: [],
+    clientesRegistrados: 0,
+    productosEnAlmacen: 0,
   })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -36,10 +41,13 @@ export function useDashboard() {
 
     async function fetchDashboard() {
       setLoading(true)
-      const { data: pedidos, error: queryError } = await supabase
-        .from('pedidos')
-        .select('*, cliente:clientes(*)')
-        .order('created_at', { ascending: false })
+      const [pedidosResult, clientesResult, inventarioResult] = await Promise.all([
+        supabase.from('pedidos').select('*, cliente:clientes(*)').order('created_at', { ascending: false }),
+        supabase.from('clientes').select('id', { count: 'exact', head: true }),
+        supabase.from('inventario').select('id', { count: 'exact', head: true }).eq('estado', 'En almacén'),
+      ])
+      const queryError = pedidosResult.error ?? clientesResult.error ?? inventarioResult.error
+      const pedidos = pedidosResult.data
 
       if (!activo) return
       if (queryError) {
@@ -65,6 +73,8 @@ export function useDashboard() {
           .filter(([, cantidad]) => cantidad > 0)
           .map(([estado, cantidad]) => ({ estado: estado as EstadoPedido, cantidad }))
           .sort((a, b) => a.estado.localeCompare(b.estado, 'es')),
+        clientesRegistrados: clientesResult.count ?? 0,
+        productosEnAlmacen: inventarioResult.count ?? 0,
       })
       setError(null)
       setLoading(false)

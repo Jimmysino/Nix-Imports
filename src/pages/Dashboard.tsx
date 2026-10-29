@@ -12,6 +12,8 @@ export function Dashboard() {
     totalComisiones,
     pedidosRecientes,
     pedidosPorEstado,
+    clientesRegistrados,
+    productosEnAlmacen,
     loading,
     error,
   } = useDashboard()
@@ -21,6 +23,8 @@ export function Dashboard() {
     { titulo: 'Pedidos entregados', valor: String(pedidosEntregados) },
     { titulo: 'Total facturado', valor: formatUSD(totalFacturado) },
     { titulo: 'Comisiones cobradas', valor: formatUSD(totalComisiones) },
+    { titulo: 'Clientes registrados', valor: String(clientesRegistrados) },
+    { titulo: 'Productos en almacén', valor: String(productosEnAlmacen) },
   ]
 
   return (
@@ -36,7 +40,7 @@ export function Dashboard() {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
         {resumen.map((item) => (
           <div key={item.titulo} className="rounded-xl border border-gray-200 bg-white shadow-sm p-5">
             <p className="text-sm text-gray-500">{item.titulo}</p>
