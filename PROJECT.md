@@ -182,6 +182,7 @@ Los pedidos pasan por un flujo definido. El admin debe poder avanzar (o retroced
 ---
 
 ### NIX-004: Listar pedidos con filtros
+**Estado Scrum:** Implementada
 **Prioridad:** Alta | **Puntos:** 5 | **Sprint:** 1
 **Como** admin, **quiero** ver una lista de todos los pedidos con filtros por estado y fecha, **para** gestionar el trabajo pendiente.
 
@@ -189,13 +190,13 @@ Los pedidos pasan por un flujo definido. El admin debe poder avanzar (o retroced
 Vista principal de pedidos en formato tabla con la información más relevante y filtros para encontrar rápidamente lo que se necesita.
 
 **Criterios de aceptación:**
-- [ ] Veo una tabla con: código, cliente, producto, estado, fecha de solicitud, total
-- [ ] Puedo filtrar por estado (uno o varios)
-- [ ] Puedo filtrar por rango de fechas
-- [ ] Puedo buscar por nombre de cliente o producto
-- [ ] Puedo ordenar por fecha o estado
-- [ ] Al hacer clic en un pedido, voy a su detalle
-- [ ] Veo un contador de resultados
+- [x] Veo una tabla con: código, cliente, producto, estado, fecha de solicitud, total
+- [x] Puedo filtrar por estado (uno o varios)
+- [x] Puedo filtrar por rango de fechas
+- [x] Puedo buscar por nombre de cliente o producto
+- [x] Puedo ordenar por fecha o estado
+- [x] Al hacer clic en un pedido, voy a su detalle
+- [x] Veo un contador de resultados
 
 ---
 
