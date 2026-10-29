@@ -220,6 +220,7 @@ Después de realizar la compra, el admin puede guardar el enlace utilizado para 
 ---
 
 ### NIX-006: Registrar clientes
+**Estado Scrum:** Implementada
 **Prioridad:** Alta | **Puntos:** 5 | **Sprint:** 1
 **Como** admin, **quiero** registrar clientes con sus datos de contacto, **para** asociarlos a los pedidos.
 
@@ -227,11 +228,11 @@ Después de realizar la compra, el admin puede guardar el enlace utilizado para 
 CRUD básico de clientes. Cada cliente tiene datos de contacto y se puede asociar a uno o más pedidos de importación.
 
 **Criterios de aceptación:**
-- [ ] Puedo crear un cliente con: nombre completo, teléfono, email (opcional), dirección (opcional), notas
-- [ ] Puedo editar los datos de un cliente existente
-- [ ] Puedo ver la lista de todos los clientes con búsqueda por nombre o teléfono
-- [ ] No puedo crear dos clientes con el mismo teléfono
-- [ ] Puedo ver cuántos pedidos tiene asociados cada cliente en la lista
+- [x] Puedo crear un cliente con: nombre completo, teléfono, email (opcional), dirección (opcional), notas
+- [x] Puedo editar los datos de un cliente existente
+- [x] Puedo ver la lista de todos los clientes con búsqueda por nombre o teléfono
+- [x] No puedo crear dos clientes con el mismo teléfono
+- [x] Puedo ver cuántos pedidos tiene asociados cada cliente en la lista
 
 ---
 
