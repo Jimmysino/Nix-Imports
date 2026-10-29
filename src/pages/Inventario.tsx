@@ -22,6 +22,8 @@ export function Inventario() {
   const [cantidad, setCantidad] = useState('1')
   const [fechaRecepcion, setFechaRecepcion] = useState(new Date().toISOString().slice(0, 10))
   const [notas, setNotas] = useState('')
+  const [busqueda, setBusqueda] = useState('')
+  const [filtroEstado, setFiltroEstado] = useState('Todos')
 
   useEffect(() => {
     Promise.all([
@@ -87,14 +89,42 @@ export function Inventario() {
       : item))
   }
 
+  const busquedaNormalizada = busqueda.trim().toLowerCase()
+  const itemsFiltrados = items.filter((item) => {
+    const coincideEstado = filtroEstado === 'Todos' || item.estado === filtroEstado
+    const coincideBusqueda = !busquedaNormalizada || `${item.producto_nombre} ${item.numero_serie ?? ''}`
+      .toLowerCase()
+      .includes(busquedaNormalizada)
+    return coincideEstado && coincideBusqueda
+  })
+  const unidadesEnAlmacen = items
+    .filter((item) => item.estado === 'En almacén')
+    .reduce((total, item) => total + item.cantidad, 0)
+  const entregados = items.filter((item) => item.estado === 'Entregado').length
+
   return (
     <div className="mx-auto max-w-6xl p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-gray-900">Inventario</h1>
-          <p className="mt-0.5 text-sm text-gray-500">{items.filter((item) => item.estado === 'En almacén').length} productos en almacén</p>
+          <p className="mt-0.5 text-sm text-gray-500">Inventario actual y historial de entregas</p>
         </div>
         <Button onClick={() => setMostrarForm(true)} className="gap-2"><Plus size={16} /> Registrar producto</Button>
+      </div>
+
+      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Unidades en almacén</p>
+          <p className="mt-1 text-2xl font-bold text-amber-700">{unidadesEnAlmacen}</p>
+        </div>
+        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Productos pendientes</p>
+          <p className="mt-1 text-2xl font-bold text-gray-900">{items.filter((item) => item.estado === 'En almacén').length}</p>
+        </div>
+        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Productos entregados</p>
+          <p className="mt-1 text-2xl font-bold text-green-700">{entregados}</p>
+        </div>
       </div>
 
       {mostrarForm && (
@@ -127,11 +157,32 @@ export function Inventario() {
       )}
 
       {error && !mostrarForm && <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
+      <div className="mb-4 grid gap-3 md:grid-cols-[1fr_220px]">
+        <Input
+          type="search"
+          label="Buscar producto"
+          placeholder="Nombre o número de serie"
+          value={busqueda}
+          onChange={(event) => setBusqueda(event.target.value)}
+        />
+        <Select
+          label="Estado"
+          value={filtroEstado}
+          onChange={(event) => setFiltroEstado(event.target.value)}
+          options={[
+            { value: 'Todos', label: 'Todos los estados' },
+            { value: 'En almacén', label: 'En almacén' },
+            { value: 'Entregado', label: 'Entregado' },
+          ]}
+        />
+      </div>
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         {loading ? (
           <div className="py-16 text-center text-sm text-gray-400">Cargando inventario...</div>
-        ) : items.length === 0 ? (
-          <div className="py-16 text-center text-sm text-gray-400">Todavía no hay productos registrados</div>
+        ) : itemsFiltrados.length === 0 ? (
+          <div className="py-16 text-center text-sm text-gray-400">
+            {items.length === 0 ? 'Todavía no hay productos registrados' : 'No se encontraron productos con esos filtros'}
+          </div>
         ) : (
           <table className="w-full text-sm">
             <thead><tr className="border-b border-gray-100 bg-gray-50">
@@ -142,7 +193,7 @@ export function Inventario() {
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Entrega</th>
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Estado</th>
             </tr></thead>
-            <tbody>{items.map((item) => (
+            <tbody>{itemsFiltrados.map((item) => (
               <tr key={item.id} className="border-b border-gray-50">
                 <td className="px-4 py-3 font-medium text-gray-800">{item.producto_nombre}</td>
                 <td className="px-4 py-3 text-gray-500">{item.numero_serie || '—'}</td>

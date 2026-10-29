@@ -290,6 +290,25 @@ Desde el inventario, el admin puede marcar como entregado cada producto que ya s
 
 ---
 
+### NIX-010: Ver inventario actual
+**Estado Scrum:** Implementada
+**Prioridad:** Media | **Puntos:** 5 | **Sprint:** 2
+**Como** admin, **quiero** consultar el inventario actual, **para** conocer qué productos están en almacén y cuáles ya fueron entregados.
+
+**Descripción:**
+La pantalla de inventario muestra todos los productos registrados, con un resumen de unidades y registros pendientes, además de filtros por nombre, número de serie y estado. Permite identificar rápidamente el inventario disponible y consultar su historial de entregas.
+
+**Criterios de aceptación:**
+- [x] Puedo ver la lista de productos registrados en el almacén
+- [x] El listado muestra nombre, número de serie, cantidad, fechas y estado
+- [x] Puedo buscar productos por nombre o número de serie
+- [x] Puedo filtrar el inventario por `En almacén` o `Entregado`
+- [x] Puedo ver cuántas unidades están pendientes de entrega
+- [x] Puedo ver cuántos productos ya fueron entregados
+- [x] El listado refleja los cambios realizados en el inventario
+
+---
+
 ### NIX-011: Configurar comisión
 **Prioridad:** Alta | **Puntos:** 3 | **Sprint:** 1
 **Como** admin, **quiero** configurar el porcentaje de comisión por importación, **para** que se aplique automáticamente a las cotizaciones.
