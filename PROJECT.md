@@ -326,6 +326,25 @@ La pantalla de configuración permite consultar y modificar el porcentaje de com
 
 ---
 
+### NIX-012: Registrar costos adicionales por pedido
+**Estado Scrum:** Implementada
+**Prioridad:** Media | **Puntos:** 5 | **Sprint:** 2
+**Como** admin, **quiero** registrar costos adicionales asociados a un pedido, **para** reflejar gastos reales y calcular su costo final correctamente.
+
+**Descripción:**
+Desde el detalle de un pedido el admin puede agregar conceptos y montos en USD que representan gastos adicionales, como seguro, almacenamiento o despacho. Los costos pueden eliminarse y se muestran sumados al costo final del pedido.
+
+**Criterios de aceptación:**
+- [x] Puedo registrar un costo adicional indicando concepto y monto
+- [x] El monto debe ser mayor a cero
+- [x] Los costos quedan asociados al pedido correspondiente
+- [x] Puedo consultar el detalle y las notas de cada costo adicional
+- [x] Puedo eliminar un costo adicional registrado
+- [x] Se muestra el total acumulado de costos adicionales
+- [x] El total del pedido se recalcula al agregar o eliminar costos
+
+---
+
 **Entidades principales:**
 - **Cliente:** nombre, teléfono, email, dirección
 - **Pedido:** cliente, producto_solicitado, url_producto, precio_producto, costo_envio, impuestos, comision_porcentaje, comision_monto, costo_total, estado, fecha_solicitud, notas

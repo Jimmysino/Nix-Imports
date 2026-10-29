@@ -6,12 +6,13 @@ import { Badge } from '../components/ui/Badge'
 import { CotizacionForm } from '../components/CotizacionForm'
 import { CambiarEstado } from '../components/CambiarEstado'
 import { CompraTracking } from '../components/CompraTracking'
+import { CostosAdicionales } from '../components/CostosAdicionales'
 import { formatUSD } from '../utils/cotizacion'
 
 export function PedidoDetalle() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { pedido, historial, loading, error, actualizarCotizacion, actualizarCompra, cambiarEstado } = usePedido(id!)
+  const { pedido, historial, costosAdicionales, loading, error, actualizarCotizacion, actualizarCompra, cambiarEstado, agregarCostoAdicional, eliminarCostoAdicional } = usePedido(id!)
   const { config } = useConfiguracion()
 
   if (loading) {
@@ -102,6 +103,16 @@ export function PedidoDetalle() {
               numeroTracking={pedido.numero_tracking}
               urlTracking={pedido.url_tracking}
               onGuardar={actualizarCompra}
+            />
+          </div>
+
+          {/* Costos adicionales */}
+          <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-4">
+            <h2 className="font-semibold text-gray-700">Costos adicionales</h2>
+            <CostosAdicionales
+              costos={costosAdicionales}
+              onAgregar={agregarCostoAdicional}
+              onEliminar={eliminarCostoAdicional}
             />
           </div>
 

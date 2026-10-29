@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import type { EstadoPedido, HistorialEstado, Pedido } from '../types/database'
+import type { CostoAdicional, EstadoPedido, HistorialEstado, Pedido } from '../types/database'
 import { getSiguienteEstado, puedeCancelar } from '../utils/estados'
 
 export function usePedido(id: string) {
   const [pedido, setPedido] = useState<Pedido | null>(null)
   const [historial, setHistorial] = useState<HistorialEstado[]>([])
+  const [costosAdicionales, setCostosAdicionales] = useState<CostoAdicional[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -15,14 +16,16 @@ export function usePedido(id: string) {
 
   async function fetchPedido() {
     setLoading(true)
-    const [{ data: pedidoData, error: pedidoError }, { data: historialData }] = await Promise.all([
+    const [{ data: pedidoData, error: pedidoError }, { data: historialData }, { data: costosData }] = await Promise.all([
       supabase.from('pedidos').select('*, cliente:clientes(*)').eq('id', id).single(),
       supabase.from('historial_estados').select('*').eq('pedido_id', id).order('fecha', { ascending: true }),
+      supabase.from('costos_adicionales').select('*').eq('pedido_id', id).order('created_at', { ascending: false }),
     ])
     if (pedidoError) setError(pedidoError.message)
     else {
       setPedido(pedidoData)
       setHistorial(historialData ?? [])
+      setCostosAdicionales(costosData ?? [])
     }
     setLoading(false)
   }
@@ -120,5 +123,35 @@ export function usePedido(id: string) {
     await fetchPedido()
   }
 
-  return { pedido, historial, loading, error, actualizarCotizacion, actualizarCompra, cambiarEstado, refetch: fetchPedido }
+  async function agregarCostoAdicional(concepto: string, monto: number, notas?: string) {
+    if (!pedido) throw new Error('Pedido no encontrado')
+    if (!concepto.trim()) throw new Error('Ingresá el concepto del costo')
+    if (!Number.isFinite(monto) || monto <= 0) throw new Error('El monto debe ser mayor a cero')
+
+    const { data, error } = await supabase
+      .from('costos_adicionales')
+      .insert({ pedido_id: pedido.id, concepto: concepto.trim(), monto_usd: monto, notas: notas?.trim() || null })
+      .select()
+      .single()
+    if (error) throw new Error(error.message)
+
+    if (pedido.total_usd !== null) {
+      await supabase.from('pedidos').update({ total_usd: pedido.total_usd + monto }).eq('id', pedido.id)
+    }
+    await fetchPedido()
+    return data
+  }
+
+  async function eliminarCostoAdicional(costo: CostoAdicional) {
+    if (!pedido) throw new Error('Pedido no encontrado')
+    const { error } = await supabase.from('costos_adicionales').delete().eq('id', costo.id)
+    if (error) throw new Error(error.message)
+
+    if (pedido.total_usd !== null) {
+      await supabase.from('pedidos').update({ total_usd: Math.max(0, pedido.total_usd - costo.monto_usd) }).eq('id', pedido.id)
+    }
+    await fetchPedido()
+  }
+
+  return { pedido, historial, costosAdicionales, loading, error, actualizarCotizacion, actualizarCompra, cambiarEstado, agregarCostoAdicional, eliminarCostoAdicional, refetch: fetchPedido }
 }

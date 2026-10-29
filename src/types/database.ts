@@ -63,6 +63,15 @@ export interface InventarioItem {
   created_at: string
 }
 
+export interface CostoAdicional {
+  id: string
+  pedido_id: string
+  concepto: string
+  monto_usd: number
+  notas: string | null
+  created_at: string
+}
+
 export interface HistorialEstado {
   id: string
   pedido_id: string
@@ -100,6 +109,12 @@ export interface Database {
         Row: InventarioItem
         Insert: Omit<InventarioItem, 'id' | 'created_at'>
         Update: Partial<Omit<InventarioItem, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      costos_adicionales: {
+        Row: CostoAdicional
+        Insert: Omit<CostoAdicional, 'id' | 'created_at'>
+        Update: Partial<Omit<CostoAdicional, 'id' | 'created_at'>>
         Relationships: []
       }
       historial_estados: {
