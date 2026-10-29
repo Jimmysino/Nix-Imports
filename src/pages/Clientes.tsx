@@ -1,22 +1,42 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Pencil, Plus, Search, X } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Eye, Pencil, Plus, Search, X } from 'lucide-react'
 import { ClienteForm } from '../components/ClienteForm'
 import { Button } from '../components/ui/Button'
 import { useClientes } from '../hooks/useClientes'
 import { supabase } from '../lib/supabase'
-import type { Cliente } from '../types/database'
+import { Badge } from '../components/ui/Badge'
+import { formatUSD } from '../utils/cotizacion'
+import type { Cliente, Pedido } from '../types/database'
 
 export function Clientes() {
+  const navigate = useNavigate()
   const { clientes, loading, error, crearCliente, actualizarCliente } = useClientes()
   const [mostrarForm, setMostrarForm] = useState(false)
   const [clienteEditando, setClienteEditando] = useState<Cliente | null>(null)
   const [busqueda, setBusqueda] = useState('')
   const [conteos, setConteos] = useState<Record<string, number>>({})
   const [errorConteos, setErrorConteos] = useState<string | null>(null)
+  const [clienteSeleccionado, setClienteSeleccionado] = useState<Cliente | null>(null)
+  const [pedidosCliente, setPedidosCliente] = useState<Pedido[]>([])
+  const [loadingPedidos, setLoadingPedidos] = useState(false)
 
   useEffect(() => {
     cargarConteos()
   }, [])
+
+  async function mostrarHistorial(cliente: Cliente) {
+    setClienteSeleccionado(cliente)
+    setLoadingPedidos(true)
+    const { data, error } = await supabase
+      .from('pedidos')
+      .select('*')
+      .eq('cliente_id', cliente.id)
+      .order('created_at', { ascending: false })
+    setPedidosCliente(error ? [] : data ?? [])
+    setErrorConteos(error?.message ?? null)
+    setLoadingPedidos(false)
+  }
 
   async function cargarConteos() {
     const { data, error } = await supabase.from('pedidos').select('cliente_id')
@@ -93,6 +113,46 @@ export function Clientes() {
 
       {(error || errorConteos) && <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error || errorConteos}</p>}
 
+      {clienteSeleccionado && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setClienteSeleccionado(null)}>
+          <div className="max-h-[80vh] w-full max-w-3xl overflow-hidden rounded-xl bg-white shadow-xl" onClick={(event) => event.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+              <div>
+                <h2 className="font-semibold text-gray-900">Historial de {clienteSeleccionado.nombre}</h2>
+                <p className="text-xs text-gray-500">{pedidosCliente.length} pedido{pedidosCliente.length !== 1 ? 's' : ''}</p>
+              </div>
+              <button type="button" onClick={() => setClienteSeleccionado(null)} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
+            </div>
+            <div className="max-h-[65vh] overflow-auto p-5">
+              {loadingPedidos ? (
+                <p className="py-10 text-center text-sm text-gray-400">Cargando pedidos...</p>
+              ) : pedidosCliente.length === 0 ? (
+                <p className="py-10 text-center text-sm text-gray-400">Este cliente todavía no tiene pedidos asociados</p>
+              ) : (
+                <div className="space-y-2">
+                  {pedidosCliente.map((pedido) => (
+                    <button
+                      type="button"
+                      key={pedido.id}
+                      onClick={() => navigate(`/pedidos/${pedido.id}`)}
+                      className="flex w-full items-center gap-4 rounded-lg border border-gray-200 p-4 text-left transition-colors hover:bg-gray-50"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="font-mono text-sm font-medium text-blue-600">{pedido.codigo}</p>
+                        <p className="truncate text-sm text-gray-700">{pedido.producto_nombre}</p>
+                        <p className="text-xs text-gray-400">{new Date(pedido.created_at).toLocaleDateString('es-AR')}</p>
+                      </div>
+                      <Badge estado={pedido.estado} />
+                      <span className="w-24 text-right text-sm font-medium text-gray-700">{formatUSD(pedido.total_usd)}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         {loading ? (
           <div className="py-16 text-center text-sm text-gray-400">Cargando clientes...</div>
@@ -117,9 +177,14 @@ export function Clientes() {
                   <td className="px-4 py-3 text-gray-500">{cliente.email || '—'}</td>
                   <td className="px-4 py-3"><span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">{conteos[cliente.id] ?? 0}</span></td>
                   <td className="px-4 py-3 text-right">
-                    <button type="button" onClick={() => editarCliente(cliente)} className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700">
-                      <Pencil size={14} /> Editar
-                    </button>
+                    <div className="flex justify-end gap-3">
+                      <button type="button" onClick={() => mostrarHistorial(cliente)} className="inline-flex items-center gap-1 text-xs font-medium text-gray-600 hover:text-gray-800">
+                        <Eye size={14} /> Historial
+                      </button>
+                      <button type="button" onClick={() => editarCliente(cliente)} className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700">
+                        <Pencil size={14} /> Editar
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

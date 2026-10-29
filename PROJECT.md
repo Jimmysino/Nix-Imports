@@ -236,6 +236,24 @@ CRUD básico de clientes. Cada cliente tiene datos de contacto y se puede asocia
 
 ---
 
+### NIX-007: Historial de pedidos por cliente
+**Estado Scrum:** Implementada
+**Prioridad:** Media | **Puntos:** 3 | **Sprint:** 2
+**Como** admin, **quiero** consultar los pedidos asociados a un cliente, **para** conocer su historial comercial y dar seguimiento rápidamente.
+
+**Descripción:**
+Desde la lista de clientes, el admin puede abrir el historial de pedidos de cada cliente. El historial muestra código, producto, estado, fecha y total de cada pedido, y permite acceder al detalle.
+
+**Criterios de aceptación:**
+- [x] Desde un cliente puedo abrir su historial de pedidos
+- [x] Veo los pedidos asociados al cliente
+- [x] Cada pedido muestra código, producto, estado, fecha y total
+- [x] Los pedidos se muestran desde el más reciente
+- [x] Puedo navegar al detalle de cada pedido
+- [x] Se muestra un mensaje cuando el cliente no tiene pedidos
+
+---
+
 ### NIX-011: Configurar comisión
 **Prioridad:** Alta | **Puntos:** 3 | **Sprint:** 1
 **Como** admin, **quiero** configurar el porcentaje de comisión por importación, **para** que se aplique automáticamente a las cotizaciones.
