@@ -38,6 +38,14 @@ export function usePedido(id: string) {
   }) {
     if (!pedido) return
     const estadoAnterior = pedido.estado
+    if (pedido.estado !== 'Solicitado' && pedido.estado !== 'Cotizado') {
+      throw new Error('La cotización solo puede modificarse antes de aprobar el pedido')
+    }
+
+    if (valores.precio_usd <= 0 || valores.tipo_cambio <= 0) {
+      throw new Error('El precio y el tipo de cambio deben ser mayores a cero')
+    }
+
     const { data, error } = await supabase
       .from('pedidos')
       .update({ ...valores, estado: 'Cotizado' })
@@ -46,14 +54,13 @@ export function usePedido(id: string) {
       .single()
     if (error) throw new Error(error.message)
 
-    // Solo registrar cambio de estado si venía de Solicitado
     if (estadoAnterior === 'Solicitado') {
-      const { error: histError } = await supabase.from('historial_estados').insert({
+      const { error: historialError } = await supabase.from('historial_estados').insert({
         pedido_id: pedido.id,
         estado: 'Cotizado',
         notas: 'Cotización generada',
       })
-      if (histError) throw new Error(histError.message)
+      if (historialError) throw new Error(historialError.message)
     }
 
     await fetchPedido()
@@ -66,6 +73,9 @@ export function usePedido(id: string) {
     // Validar que no se salten estados
     if (nuevoEstado !== 'Cancelado') {
       const siguiente = getSiguienteEstado(pedido.estado)
+      if (nuevoEstado === 'Cotizado') {
+        throw new Error('Para cotizar el pedido usá el formulario de cotización')
+      }
       if (siguiente !== nuevoEstado) {
         throw new Error(`No se puede pasar de "${pedido.estado}" a "${nuevoEstado}" directamente`)
       }
@@ -81,12 +91,12 @@ export function usePedido(id: string) {
       .eq('id', pedido.id)
     if (error) throw new Error(error.message)
 
-    const { error: histError } = await supabase.from('historial_estados').insert({
+    const { error: historialError } = await supabase.from('historial_estados').insert({
       pedido_id: pedido.id,
       estado: nuevoEstado,
       notas: notas ?? null,
     })
-    if (histError) throw new Error(histError.message)
+    if (historialError) throw new Error(historialError.message)
 
     await fetchPedido()
   }

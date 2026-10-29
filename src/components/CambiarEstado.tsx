@@ -18,6 +18,8 @@ export function CambiarEstado({ estadoActual, onCambiar }: CambiarEstadoProps) {
   const siguienteEstado = getSiguienteEstado(estadoActual)
   const puedeCancel = puedeCancelar(estadoActual)
   const esFinal = estadoActual === 'Entregado' || estadoActual === 'Cancelado'
+  const requiereCotizacion = estadoActual === 'Solicitado'
+  const siguienteVisible = requiereCotizacion ? null : siguienteEstado
 
   async function handleCambiar(nuevoEstado: EstadoPedido) {
     setCargando(true)
@@ -99,9 +101,13 @@ export function CambiarEstado({ estadoActual, onCambiar }: CambiarEstadoProps) {
       {/* Botones de acción */}
       {!confirmando && (
         <div className="flex items-center gap-2">
-          {siguienteEstado && (
+          {requiereCotizacion ? (
+            <span className="text-xs text-gray-500">
+              Para cotizar este pedido, completá y guardá la cotización arriba.
+            </span>
+          ) : siguienteVisible && (
             <Button size="sm" onClick={() => setConfirmando('avanzar')}>
-              Avanzar a {siguienteEstado}
+              Avanzar a {siguienteVisible}
             </Button>
           )}
           {puedeCancel && (

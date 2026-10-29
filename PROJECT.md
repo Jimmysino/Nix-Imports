@@ -165,6 +165,7 @@ Una vez registrado el pedido, el admin ingresa los costos reales del producto. E
 ---
 
 ### NIX-003: Cambiar estado del pedido
+**Estado Scrum:** Implementada
 **Prioridad:** Alta | **Puntos:** 5 | **Sprint:** 1
 **Como** admin, **quiero** cambiar el estado de un pedido, **para** rastrear el progreso de cada importación.
 
